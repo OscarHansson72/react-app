@@ -1,30 +1,63 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from "./components/Alert";
 import Button from "./components/Button";
-import ListGroup from "./components/ListGroup";
+
+interface Movie {
+  id: string;
+  name: string;
+  director: string;
+  actors: string[];
+  genre: string;
+  releaseDate: string;
+  description: string;
+  imageUrl: string;
+}
+
 function App() {
-  let items = ["New York", "San Fransisco", "Tokyo", "London", "Paris"];
-
-  const handleSelectItem = (item: string) => {
-    console.log(item);
-  };
-
   const [alertVisible, setAlertVisibility] = useState(false);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
   const handlePressedButton = () => {
     setAlertVisibility(true);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetch("http://localhost:32770/movies");
+      const jsonResult = await result.json();
+      setMovies(jsonResult);
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div>
       {alertVisible && (
         <Alert onClose={() => setAlertVisibility(false)}>My alert</Alert>
       )}
-      <Button
-        color="warning"
-        onClick={handlePressedButton}
-        text="Ooopsie"
-      ></Button>
+
+      <Button color="warning" onClick={handlePressedButton} text="Ooopsie" />
+
+      {movies.map((movie) => (
+        <div key={movie.id} className="movies__item">
+          <h3>{movie.name}</h3>
+          <p>{movie.description}</p>
+          <p>
+            <strong>Director:</strong> {movie.director}
+          </p>
+          <p>
+            <strong>Genre:</strong> {movie.genre}
+          </p>
+          <p>
+            <strong>Actors:</strong> {movie.actors.join(", ")}
+          </p>
+          <p>
+            <strong>Release Date:</strong> {movie.releaseDate}
+          </p>
+          <img src={movie.imageUrl} alt={movie.name} width={200} />
+        </div>
+      ))}
     </div>
   );
 }
