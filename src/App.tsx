@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Alert from "./components/Alert";
 import Button from "./components/Button";
+import Navbar from "./components/Navbar";
 
 interface Movie {
   id: string;
@@ -23,7 +24,7 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await fetch("http://localhost:32770/movies");
+      const result = await fetch("http://localhost:32771/movies");
       const jsonResult = await result.json();
       setMovies(jsonResult);
     };
@@ -33,6 +34,7 @@ function App() {
 
   return (
     <div>
+      <Navbar></Navbar>
       {alertVisible && (
         <Alert onClose={() => setAlertVisibility(false)}>My alert</Alert>
       )}
