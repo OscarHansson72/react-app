@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Alert from "./components/Alert";
 import Button from "./components/Button";
 import Navbar from "./components/Navbar";
+import logo from "./assets/kisspng-art-film-logo-cinema-clip-art-movie-logo-cliparts-5ab587fb1000c4.1651552415218462670656.jpg";
 
 interface Movie {
   id: string;
@@ -24,7 +25,7 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await fetch("http://localhost:32771/movies");
+      const result = await fetch("http://localhost:32768/movies");
       const jsonResult = await result.json();
       setMovies(jsonResult);
     };
@@ -34,7 +35,19 @@ function App() {
 
   return (
     <div>
-      <Navbar></Navbar>
+      <Navbar
+        logoSrc={logo}
+        onSearch={async (query) => {
+          const result = await fetch(
+            `https://localhost:7234/movies?search=${encodeURIComponent(query)}`
+          );
+          const jsonResult = await result.json();
+          setMovies(jsonResult);
+        }}
+      >
+        <button className="btn btn-outline-info">Login</button>
+      </Navbar>
+
       {alertVisible && (
         <Alert onClose={() => setAlertVisibility(false)}>My alert</Alert>
       )}
